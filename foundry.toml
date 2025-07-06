@@ -2,5 +2,31 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+solc = "0.8.21"
+via-ir = true
+optimizer_runs = 55_555_555
+fs_permissions = [
+    { access = "read-write", path = "./deployments/31337/data" },
+    { access = "read", path = "./out" },
+    { access = "read-write", path = "./output" },
+]
+remappings = [
+    "transmissions11/solmate/=lib/solmate/src/",
+    "forge-std/=lib/forge-std/src/",
+    "solady/=lib/solady/src/",
+]
 
-# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+[fmt]
+line_length = 100
+tab_width = 4
+bracket_spacing = true
+int_types = "long"
+func_attrs_with_params_multiline = false
+quote_style = "double"
+number_underscore = "thousands"
+
+[etherscan]
+mainnet = { key = "${ETHERSCAN_API_KEY}", url = "https://api.etherscan.io/api" }
+
+[rpc_endpoints]
+mainnet = "${RPC_URL_MAINNET}"
