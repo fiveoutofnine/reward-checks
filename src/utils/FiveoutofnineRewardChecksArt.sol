@@ -5,8 +5,7 @@ import {LibString} from "solady/utils/LibString.sol";
 
 /// @title {FiveoutofnineRewardChecks} visual art
 /// @author fiveoutofnine
-/// @notice A library for generating art and metadata for
-/// {FiveoutofnineRewardChecks}.
+/// @notice A library for generating art for {FiveoutofnineRewardChecks}.
 library FiveoutofnineRewardChecksArt {
     using LibString for uint256;
 
@@ -36,8 +35,9 @@ library FiveoutofnineRewardChecksArt {
         'use href="#v" x="275" y="220"/><use href="#v" x="0" y="220"/><use href'
         '="#v" x="110" y="275"/><use href="#v" x="220" y="330"/></g><g fill=';
 
-    /// @notice A look-up table of binomial coefficient inputs to indices
-    /// bitpacked as 4-bit values.
+    /// @notice A look-up table of binomial combinations for $n = 8$ to indices
+    /// to lookup the corresponding value in the `C_VALUES_LUT`.
+    /// @dev Bit-packed as 4-bit values.
     uint256 internal constant C_INDICES_LUT =
         0x10000000022000000035300000048840000059a9500006bddb60007cefec70;
 
@@ -50,13 +50,17 @@ library FiveoutofnineRewardChecksArt {
     // -------------------------------------------------------------------------
 
     /// @notice Renders the SVG for a given token ID.
-    /// @param _tokenId The token ID to render.
-    /// @return SVG output for the given token ID.
-    function render(uint256 _tokenId) internal pure returns (string memory) {
+    /// @param _id The token ID to render.
+    /// @return The SVG output for the given token ID..
+    /// @return The pattern of squares filled inside the central square.
+    function render(
+        uint256 _id
+    ) internal pure returns (string memory, uint256) {
         unchecked {
-            int256 i = int256(_tokenId) % 126;
+            int256 i = int256(_id) % 126;
             string memory svg = "";
             uint256 k = 5;
+            uint256 pattern;
 
             for (uint256 p; p < 9; ++p) {
                 uint256 j = (C_INDICES_LUT >> ((8 + 9 * p - k) << 2)) & 0xF;
@@ -78,17 +82,20 @@ library FiveoutofnineRewardChecksArt {
                         (55 * (x + (y << 1))).toString(),
                         '"/>'
                     );
+                    pattern |= 1 << p;
                     k--;
                 }
             }
 
-            return
+            return (
                 string.concat(
                     SVG_START,
                     '"#0d2847" stroke="#104d87">',
                     svg,
                     "</g></svg>"
-                );
+                ),
+                pattern
+            );
         }
     }
 }
