@@ -7,8 +7,8 @@ import {LibString} from "solady/utils/LibString.sol";
 
 import {FiveoutofnineRewardChecksArt} from "src/utils/FiveoutofnineRewardChecksArt.sol";
 
-/// @notice A script to create and write the base64-encoded JSON output of a
-/// given token's metadata, directly from the utility library.
+/// @notice A script to create and write the SVG output of a given token's
+/// metadata, directly from the utility library.
 /// @dev You must run this script with `--via-ir`.
 contract GenerateArtOutputScript is Script {
     using LibString for uint256;

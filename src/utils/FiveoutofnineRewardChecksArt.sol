@@ -3,6 +3,10 @@ pragma solidity ^0.8.21;
 
 import {LibString} from "solady/utils/LibString.sol";
 
+/// @title {FiveoutofnineRewardChecks} visual art
+/// @author fiveoutofnine
+/// @notice A library for generating art and metadata for
+/// {FiveoutofnineRewardChecks}.
 library FiveoutofnineRewardChecksArt {
     using LibString for uint256;
 
@@ -10,6 +14,7 @@ library FiveoutofnineRewardChecksArt {
     // Constants
     // -------------------------------------------------------------------------
 
+    /// @notice The starting string for the SVG.
     string internal constant SVG_START =
         '<svg xmlns="http://www.w3.org/2000/svg" width="555" height="555" viewB'
         'ox="0 0 555 555" fill="none"><path id="f" d="M28.65836 28.65836h497.68'
@@ -31,9 +36,13 @@ library FiveoutofnineRewardChecksArt {
         'use href="#v" x="275" y="220"/><use href="#v" x="0" y="220"/><use href'
         '="#v" x="110" y="275"/><use href="#v" x="220" y="330"/></g><g fill=';
 
+    /// @notice A look-up table of binomial coefficient inputs to indices
+    /// bitpacked as 4-bit values.
     uint256 internal constant C_INDICES_LUT =
         0x10000000022000000035300000048840000059a9500006bddb60007cefec70;
 
+    /// @notice A look-up table of binomial coefficient values bitpacked as
+    /// 8-bit values.
     uint256 internal constant C_VALUES_LUT = 0x4638231c15140f0a0807060504030201;
 
     // -------------------------------------------------------------------------
