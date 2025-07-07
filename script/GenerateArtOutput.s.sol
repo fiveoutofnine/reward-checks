@@ -18,7 +18,7 @@ contract GenerateArtOutputScript is Script {
     // -------------------------------------------------------------------------
 
     /// @notice Calls the {FiveoutofnineRewardChecksArt} library to generate the
-    /// SVG output for a given token ID `i` and writes it
+    /// SVG output for a given token ID `i` and writes it to
     ///  `./output/svg/{i}.svg`.
     function run() public {
         for (uint256 i; i < 126;) {
