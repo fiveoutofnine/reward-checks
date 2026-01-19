@@ -16,7 +16,7 @@ contract FiveoutofnineRewardChecksTest is Test {
 
     /// @notice Reward amount for each check.
     /// @dev Equivalent to 5.5555555555555⋅10⁻⁵ ETH.
-    uint256 constant REWARD_AMOUNT = 0.000055555555555555 ether;
+    uint256 constant REWARD_AMOUNT = 0.000_055_555_555_555_555 ether;
 
     // -------------------------------------------------------------------------
     // Immutable storage

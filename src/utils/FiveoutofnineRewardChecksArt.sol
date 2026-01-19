@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-import { LibString } from "solady/utils/LibString.sol";
+import {LibString} from "solady/utils/LibString.sol";
 
 /// @title {FiveoutofnineRewardChecks} visual art
 /// @author fiveoutofnine
@@ -53,7 +53,9 @@ library FiveoutofnineRewardChecksArt {
     /// @param _id The token ID to render.
     /// @return The SVG output for the given token ID..
     /// @return The pattern of squares filled inside the central square.
-    function render(uint256 _id) internal pure returns (string memory, uint256) {
+    function render(
+        uint256 _id
+    ) internal pure returns (string memory, uint256) {
         unchecked {
             int256 i = int256(_id) % 126;
             string memory svg = "";
@@ -86,7 +88,13 @@ library FiveoutofnineRewardChecksArt {
             }
 
             return (
-                string.concat(SVG_START, '"#0d2847" stroke="#104d87">', svg, "</g></svg>"), pattern
+                string.concat(
+                    SVG_START,
+                    '"#0d2847" stroke="#104d87">',
+                    svg,
+                    "</g></svg>"
+                ),
+                pattern
             );
         }
     }

@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-import { Script } from "forge-std/Script.sol";
-import { console } from "forge-std/Test.sol";
-import { LibString } from "solady/utils/LibString.sol";
+import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/Test.sol";
+import {LibString} from "solady/utils/LibString.sol";
 
-import { FiveoutofnineRewardChecksArt } from "src/utils/FiveoutofnineRewardChecksArt.sol";
+import {
+    FiveoutofnineRewardChecksArt
+} from "src/utils/FiveoutofnineRewardChecksArt.sol";
 
 /// @notice A script to create and write the SVG output of a given token's
 /// metadata, directly from the utility library.
@@ -19,12 +21,17 @@ contract GenerateArtOutputScript is Script {
 
     /// @notice Calls the {FiveoutofnineRewardChecksArt} library to generate the
     /// SVG output for a given token ID `i` and writes it to
-    ///  `./output/svg/{i}.svg`.
+    /// `./output/svg/{i}.svg`.
     function run() public {
-        for (uint256 i; i < 126;) {
-            (string memory svg,) = FiveoutofnineRewardChecksArt.render({ _id: i });
+        for (uint256 i; i < 126; ) {
+            (string memory svg, ) = FiveoutofnineRewardChecksArt.render({
+                _id: i
+            });
 
-            vm.writeFile(string.concat("./output/svg/", i.toString(), ".svg"), svg);
+            vm.writeFile(
+                string.concat("./output/svg/", i.toString(), ".svg"),
+                svg
+            );
 
             unchecked {
                 ++i;
