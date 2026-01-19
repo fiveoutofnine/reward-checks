@@ -84,7 +84,7 @@ contract FiveoutofnineRewardChecks is
 
         (string memory attributes, string memory image) = Art.render({
             _id: _id,
-            _colorPalette: Art.ColorPalette.GRAY,
+            _theme: Art.Theme.GRAY,
             _recipient: _ownerOf[_id],
             _blockNumber: block.number,
             _memo: ""

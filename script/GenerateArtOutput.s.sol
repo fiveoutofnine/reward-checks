@@ -23,19 +23,18 @@ contract GenerateArtOutputScript is Script {
     /// `./output/svg/{i}.svg`.
     function run() public {
         for (uint256 i; i < 126; ) {
-            uint256 paletteSeed = i % 6;
-            Art.ColorPalette colorPalette = [
-                Art.ColorPalette.BLUE,
-                Art.ColorPalette.GRAY,
-                Art.ColorPalette.GREEN,
-                Art.ColorPalette.ORANGE,
-                Art.ColorPalette.RED,
-                Art.ColorPalette.YELLOW
-            ][paletteSeed];
+            Art.Theme theme = [
+                Art.Theme.BLUE,
+                Art.Theme.GRAY,
+                Art.Theme.GREEN,
+                Art.Theme.ORANGE,
+                Art.Theme.RED,
+                Art.Theme.YELLOW
+            ][i % 6];
 
             (string memory attributes, string memory svg) = Art.render({
                 _id: i,
-                _colorPalette: colorPalette,
+                _theme: theme,
                 _recipient: 0xA85572Cd96f1643458f17340b6f0D6549Af482F5,
                 _blockNumber: 5_555_555,
                 _memo: "typo fix"

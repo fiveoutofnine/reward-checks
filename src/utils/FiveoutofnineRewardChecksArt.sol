@@ -236,8 +236,8 @@ library FiveoutofnineRewardChecksArt {
     // Enums
     // -------------------------------------------------------------------------
 
-    /// @notice The color palette for the art.
-    enum ColorPalette {
+    /// @notice The theme for the art.
+    enum Theme {
         BLUE,
         GRAY,
         GREEN,
@@ -252,7 +252,7 @@ library FiveoutofnineRewardChecksArt {
 
     /// @notice Renders the SVG for a given token ID.
     /// @param _id The token ID to render.
-    /// @param _colorPalette The color palette to use for the art.
+    /// @param _theme The theme to use for the art.
     /// @param _recipient The address of the recipient of the reward check.
     /// @param _blockNumber The block number the reward check was minted at.
     /// @param _memo A memo on the reward check.
@@ -260,7 +260,7 @@ library FiveoutofnineRewardChecksArt {
     /// @return The SVG output for the given token ID.
     function render(
         uint256 _id,
-        ColorPalette _colorPalette,
+        Theme _theme,
         address _recipient,
         uint256 _blockNumber,
         string memory _memo
@@ -291,21 +291,21 @@ library FiveoutofnineRewardChecksArt {
         // Generate the token's image.
         string memory image;
         {
-            uint256 colors = _getColorPaletteHexValues(_colorPalette);
+            uint256 palette = _getColorPalette(_theme);
             image = string.concat(
                 SVG_START,
-                (colors & 0xFFFFFF).toHexStringNoPrefix(3), // Background
+                (palette & 0xFFFFFF).toHexStringNoPrefix(3), // Background
                 "}.O{fill:#",
-                ((colors >> 96) & 0xFFFFFF).toHexStringNoPrefix(3), // Primary text
+                ((palette >> 96) & 0xFFFFFF).toHexStringNoPrefix(3), // Primary text
                 "}.F{fill:#",
-                ((colors >> 72) & 0xFFFFFF).toHexStringNoPrefix(3), // Secondary text
+                ((palette >> 72) & 0xFFFFFF).toHexStringNoPrefix(3), // Secondary text
                 "}.n{fill:#",
-                ((colors >> 48) & 0xFFFFFF).toHexStringNoPrefix(3), // Border
+                ((palette >> 48) & 0xFFFFFF).toHexStringNoPrefix(3), // Border
                 "}.I{fill:#",
-                ((colors >> 24) & 0xFFFFFF).toHexStringNoPrefix(3), // Card background
+                ((palette >> 24) & 0xFFFFFF).toHexStringNoPrefix(3), // Card background
                 "}.N{fill:none;stroke-width:1.333333;stroke-linejoin:round;stro"
                 "ke-linecap:round;stroke:#",
-                ((colors >> 72) & 0xFFFFFF).toHexStringNoPrefix(3), // Secondary text (icons)
+                ((palette >> 72) & 0xFFFFFF).toHexStringNoPrefix(3), // Secondary text (icons)
                 '}</style><mask id="E"><rect width="555" height="555" rx="10.27'
                 '8" fill="#fff"/></mask><path class="t" d="M0 0h550v550H0z"/><r'
                 'ect class="n" x="143" y="69" width="264" height="412" rx="8"/>'
@@ -410,25 +410,25 @@ library FiveoutofnineRewardChecksArt {
     /// palette.
     /// @dev The color scale follows the [Radix Colors](https://www.radix-ui.com/colors)
     /// color system.
-    /// @param _colorPalette The color palette.
-    /// @param colors A bitpacked element containing the hex values of `color1`
+    /// @param _theme The color palette.
+    /// @param palette A bitpacked element containing the hex values of `color1`
     /// (background), `color2` (subtle background), `color6` (border), `color11`
     /// (secondary text), and `color12` (primary text) as 24-bit words (LSB).
-    function _getColorPaletteHexValues(
-        ColorPalette _colorPalette
-    ) internal pure returns (uint256 colors) {
-        if (_colorPalette == ColorPalette.BLUE) {
-            colors = 0xC2E6FF70B8FF104D871119270D1520;
-        } else if (_colorPalette == ColorPalette.GRAY) {
-            colors = 0xEEEEEEB4B4B43A3A3A191919111111;
-        } else if (_colorPalette == ColorPalette.GREEN) {
-            colors = 0xB1F1CB3DD68C20573E121B170E1512;
-        } else if (_colorPalette == ColorPalette.ORANGE) {
-            colors = 0xFFE0C2FFA05766350C1E160F17120E;
-        } else if (_colorPalette == ColorPalette.RED) {
-            colors = 0xFFD1D9FF959272232D201314191111;
-        } else if (_colorPalette == ColorPalette.YELLOW) {
-            colors = 0xF6EEB4F5E1475242021B180F14120B;
+    function _getColorPalette(
+        Theme _theme
+    ) internal pure returns (uint256 palette) {
+        if (_theme == Theme.BLUE) {
+            palette = 0xC2E6FF70B8FF104D871119270D1520;
+        } else if (_theme == Theme.GRAY) {
+            palette = 0xEEEEEEB4B4B43A3A3A191919111111;
+        } else if (_theme == Theme.GREEN) {
+            palette = 0xB1F1CB3DD68C20573E121B170E1512;
+        } else if (_theme == Theme.ORANGE) {
+            palette = 0xFFE0C2FFA05766350C1E160F17120E;
+        } else if (_theme == Theme.RED) {
+            palette = 0xFFD1D9FF959272232D201314191111;
+        } else if (_theme == Theme.YELLOW) {
+            palette = 0xF6EEB4F5E1475242021B180F14120B;
         }
     }
 
