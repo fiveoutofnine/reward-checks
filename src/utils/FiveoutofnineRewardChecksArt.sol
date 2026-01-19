@@ -7,6 +7,8 @@ import {LibString} from "solady/utils/LibString.sol";
 /// @author fiveoutofnine
 /// @notice A library for generating art for {FiveoutofnineRewardChecks}.
 library FiveoutofnineRewardChecksArt {
+    using LibString for address;
+    using LibString for string;
     using LibString for uint256;
 
     // -------------------------------------------------------------------------
@@ -231,15 +233,37 @@ library FiveoutofnineRewardChecksArt {
     uint256 internal constant C_VALUES_LUT = 0x4638231c15140f0a0807060504030201;
 
     // -------------------------------------------------------------------------
-    // `render` function
+    // Enums
+    // -------------------------------------------------------------------------
+
+    /// @notice The color palette for the art.
+    enum ColorPalette {
+        BLUE,
+        GRAY,
+        GREEN,
+        ORANGE,
+        RED,
+        YELLOW
+    }
+
+    // -------------------------------------------------------------------------
+    // Art
     // -------------------------------------------------------------------------
 
     /// @notice Renders the SVG for a given token ID.
     /// @param _id The token ID to render.
+    /// @param _colorPalette The color palette to use for the art.
+    /// @param _recipient The address of the recipient of the reward check.
+    /// @param _blockNumber The block number the reward check was minted at.
+    /// @param _memo A memo on the reward check.
     /// @return The attributes metadata for the given token ID.
     /// @return The SVG output for the given token ID.
     function render(
-        uint256 _id
+        uint256 _id,
+        ColorPalette _colorPalette,
+        address _recipient,
+        uint256 _blockNumber,
+        string memory _memo
     ) external pure returns (string memory, string memory) {
         // Render the central element.
         (string memory innerSVG, uint256 pattern) = _renderInner(_id);
@@ -248,7 +272,9 @@ library FiveoutofnineRewardChecksArt {
         string memory attributes;
         {
             attributes = string.concat(
-                '[{"trait_type":"Pattern","value":"',
+                '[{"trait_type":"Recipient","value":"',
+                _recipient.toHexStringChecksummed(),
+                '"},{"trait_type":"Pattern","value":"',
                 (pattern >> 8) & 1 == 1 ? "1" : "0",
                 (pattern >> 7) & 1 == 1 ? "1" : "0",
                 (pattern >> 6) & 1 == 1 ? "1" : "0",
@@ -265,20 +291,21 @@ library FiveoutofnineRewardChecksArt {
         // Generate the token's image.
         string memory image;
         {
+            uint256 colors = _getColorPaletteHexValues(_colorPalette);
             image = string.concat(
                 SVG_START,
-                "111", // Background
+                (colors & 0xFFFFFF).toHexStringNoPrefix(3), // Background
                 "}.O{fill:#",
-                "eee", // Primary text
+                ((colors >> 96) & 0xFFFFFF).toHexStringNoPrefix(3), // Primary text
                 "}.F{fill:#",
-                "b4b4b4", // Secondary text
+                ((colors >> 72) & 0xFFFFFF).toHexStringNoPrefix(3), // Secondary text
                 "}.n{fill:#",
-                "3a3a3a", // Border
+                ((colors >> 48) & 0xFFFFFF).toHexStringNoPrefix(3), // Border
                 "}.I{fill:#",
-                "191919", // Card background
+                ((colors >> 24) & 0xFFFFFF).toHexStringNoPrefix(3), // Card background
                 "}.N{fill:none;stroke-width:1.333333;stroke-linejoin:round;stro"
                 "ke-linecap:round;stroke:#",
-                "b4b4b4", // Secondary text (icons)
+                ((colors >> 72) & 0xFFFFFF).toHexStringNoPrefix(3), // Secondary text (icons)
                 '}</style><mask id="E"><rect width="555" height="555" rx="10.27'
                 '8" fill="#fff"/></mask><path class="t" d="M0 0h550v550H0z"/><r'
                 'ect class="n" x="143" y="69" width="264" height="412" rx="8"/>'
@@ -300,7 +327,7 @@ library FiveoutofnineRewardChecksArt {
                 "5 0 0 0-3.988 1.983m7.975 0a6 6 0 1 0-7.975 0m7.975 0A5.98 5.9"
                 "8 0 0 1 173 389a5.98 5.98 0 0 1-3.988-1.517M175 381.5a2 2 0 1 "
                 '1-4 0 2 2 0 0 1 4 0"/><text class="v o O" x="187" y="383">',
-                "B2FBCF2", // Deposit address
+                _formatValueAsAddress(uint160(_recipient) >> 132), // Deposit address
                 unicode'</text><text class="e u F" x="187" y="403">Deposit to</'
                 unicode'text><path class="N" d="m285 382.333 4-6 4 6-4 2zm8 2.3'
                 unicode'34-4 5-4-5 4 2z"/><text class="v o O" x="303" y="383">5'
@@ -312,14 +339,14 @@ library FiveoutofnineRewardChecksArt {
                 unicode'-2.667a1.33 1.33 0 0 0 .667-1.153Z"/><path class="N" d='
                 unicode'"M167.2 429.667 173 433l5.8-3.333m-5.8 10V433"/><text c'
                 unicode'lass="v o O" x="187" y="433">',
-                "5555555", // Block number
+                _blockNumber.toString(), // Block number
                 '</text><text class="e u F" x="187" y="453">Block</text><path c'
                 'lass="N" d="M295 431a1.6 1.6 0 0 0-.47-1.137l-2.393-2.392A1.6 '
                 "1.6 0 0 0 291 427h-6.667a1.333 1.333 0 0 0-1.333 1.333v9.334a1"
                 ".333 1.333 0 0 0 1.333 1.333h9.334a1.333 1.333 0 0 0 1.333-1.3"
                 '33z"/><path class="N" d="M291 427v3.333a.667.667 0 0 0 .667.66'
                 '7H295"/><text class="v o O" x="303" y="433">',
-                "typo fix", // Memo
+                _memo, // Memo
                 '</text><text class="e u F" x="303" y="453">Memo</text></svg>'
             );
         }
@@ -377,5 +404,52 @@ library FiveoutofnineRewardChecksArt {
                 pattern
             );
         }
+    }
+
+    /// @notice Helper function to retrieve the hex values of a given color
+    /// palette.
+    /// @dev The color scale follows the [Radix Colors](https://www.radix-ui.com/colors)
+    /// color system.
+    /// @param _colorPalette The color palette.
+    /// @param colors A bitpacked element containing the hex values of `color1`
+    /// (background), `color2` (subtle background), `color6` (border), `color11`
+    /// (secondary text), and `color12` (primary text) as 24-bit words (LSB).
+    function _getColorPaletteHexValues(
+        ColorPalette _colorPalette
+    ) internal pure returns (uint256 colors) {
+        if (_colorPalette == ColorPalette.BLUE) {
+            colors = 0xC2E6FF70B8FF104D871119270D1520;
+        } else if (_colorPalette == ColorPalette.GRAY) {
+            colors = 0xEEEEEEB4B4B43A3A3A191919111111;
+        } else if (_colorPalette == ColorPalette.GREEN) {
+            colors = 0xB1F1CB3DD68C20573E121B170E1512;
+        } else if (_colorPalette == ColorPalette.ORANGE) {
+            colors = 0xFFE0C2FFA05766350C1E160F17120E;
+        } else if (_colorPalette == ColorPalette.RED) {
+            colors = 0xFFD1D9FF959272232D201314191111;
+        } else if (_colorPalette == ColorPalette.YELLOW) {
+            colors = 0xF6EEB4F5E1475242021B180F14120B;
+        }
+    }
+
+    /// @notice Helper function to format the last 28 bits of a value as a
+    /// hexstring of length 7. If the value is less than 24 bits, it is padded
+    /// with leading zeros.
+    /// @param _value The value to format.
+    /// @return string memory The formatted string.
+    function _formatValueAsAddress(
+        uint256 _value
+    ) internal pure returns (string memory) {
+        return
+            string.concat(
+                string(
+                    abi.encodePacked(
+                        // We directly use the `bytes32` value.
+                        // forge-lint: disable-next-line(unsafe-typecast)
+                        bytes32("0123456789ABCDEF")[(_value >> 24) & 0xF]
+                    )
+                ),
+                (_value & 0xFFFFFF).toHexStringNoPrefix(3).toCase(true)
+            );
     }
 }

@@ -10,7 +10,7 @@ import {
     IFiveoutofnineRewardChecks
 } from "./interfaces/IFiveoutofnineRewardChecks.sol";
 import {
-    FiveoutofnineRewardChecksArt
+    FiveoutofnineRewardChecksArt as Art
 } from "./utils/FiveoutofnineRewardChecksArt.sol";
 
 /// @title 5/9 Reward Checks
@@ -82,10 +82,13 @@ contract FiveoutofnineRewardChecks is
         // Revert if the token hasn't been minted.
         if (_ownerOf[_id] == address(0)) revert TokenUnminted();
 
-        (
-            string memory attributes,
-            string memory image
-        ) = FiveoutofnineRewardChecksArt.render({_id: _id});
+        (string memory attributes, string memory image) = Art.render({
+            _id: _id,
+            _colorPalette: Art.ColorPalette.GRAY,
+            _recipient: _ownerOf[_id],
+            _blockNumber: block.number,
+            _memo: ""
+        });
 
         return
             string.concat(

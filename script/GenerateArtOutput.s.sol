@@ -6,12 +6,11 @@ import {console} from "forge-std/Test.sol";
 import {LibString} from "solady/utils/LibString.sol";
 
 import {
-    FiveoutofnineRewardChecksArt
+    FiveoutofnineRewardChecksArt as Art
 } from "src/utils/FiveoutofnineRewardChecksArt.sol";
 
 /// @notice A script to create and write the SVG output of a given token's
 /// metadata, directly from the utility library.
-/// @dev You must run this script with `--via-ir`.
 contract GenerateArtOutputScript is Script {
     using LibString for uint256;
 
@@ -24,10 +23,28 @@ contract GenerateArtOutputScript is Script {
     /// `./output/svg/{i}.svg`.
     function run() public {
         for (uint256 i; i < 126; ) {
-            (string memory svg, ) = FiveoutofnineRewardChecksArt.render({
-                _id: i
+            uint256 paletteSeed = i % 6;
+            Art.ColorPalette colorPalette = [
+                Art.ColorPalette.BLUE,
+                Art.ColorPalette.GRAY,
+                Art.ColorPalette.GREEN,
+                Art.ColorPalette.ORANGE,
+                Art.ColorPalette.RED,
+                Art.ColorPalette.YELLOW
+            ][paletteSeed];
+
+            (string memory attributes, string memory svg) = Art.render({
+                _id: i,
+                _colorPalette: colorPalette,
+                _recipient: 0xA85572Cd96f1643458f17340b6f0D6549Af482F5,
+                _blockNumber: 5_555_555,
+                _memo: "typo fix"
             });
 
+            vm.writeFile(
+                string.concat("./output/attributes/", i.toString(), ".json"),
+                attributes
+            );
             vm.writeFile(
                 string.concat("./output/svg/", i.toString(), ".svg"),
                 svg
