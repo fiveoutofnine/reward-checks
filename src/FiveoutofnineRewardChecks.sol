@@ -82,8 +82,10 @@ contract FiveoutofnineRewardChecks is
         // Revert if the token hasn't been minted.
         if (_ownerOf[_id] == address(0)) revert TokenUnminted();
 
-        (string memory svg, uint256 pattern) = FiveoutofnineRewardChecksArt
-            .render({_id: _id});
+        (
+            string memory attributes,
+            string memory image
+        ) = FiveoutofnineRewardChecksArt.render({_id: _id});
 
         return
             string.concat(
@@ -95,18 +97,10 @@ contract FiveoutofnineRewardChecks is
                         '","description":"',
                         COLLECTION_DESCRIPTION,
                         '","image_data":"data:image/svg+xml;charset=utf-8;base64,',
-                        Base64.encode(abi.encodePacked(svg)),
-                        '","attributes":[{"trait_type":"Pattern","value":"',
-                        (pattern >> 8) & 1 == 1 ? "1" : "0",
-                        (pattern >> 7) & 1 == 1 ? "1" : "0",
-                        (pattern >> 6) & 1 == 1 ? "1" : "0",
-                        (pattern >> 5) & 1 == 1 ? "1" : "0",
-                        (pattern >> 4) & 1 == 1 ? "1" : "0",
-                        (pattern >> 3) & 1 == 1 ? "1" : "0",
-                        (pattern >> 2) & 1 == 1 ? "1" : "0",
-                        (pattern >> 1) & 1 == 1 ? "1" : "0",
-                        (pattern) & 1 == 1 ? "1" : "0",
-                        '"}]}'
+                        Base64.encode(abi.encodePacked(image)),
+                        '","attributes":',
+                        attributes,
+                        "}"
                     )
                 )
             );
