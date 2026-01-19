@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-import { Test } from "forge-std/Test.sol";
-import { FiveoutofnineRewardChecks } from "src/FiveoutofnineRewardChecks.sol";
-import { IFiveoutofnineRewardChecks } from "src/interfaces/IFiveoutofnineRewardChecks.sol";
+import {Test} from "forge-std/Test.sol";
+import {FiveoutofnineRewardChecks} from "src/FiveoutofnineRewardChecks.sol";
+import {
+    IFiveoutofnineRewardChecks
+} from "src/interfaces/IFiveoutofnineRewardChecks.sol";
 
 /// @notice Unit tests for {FiveoutofnineRewardChecks}.
 contract FiveoutofnineRewardChecksTest is Test {
@@ -89,7 +91,7 @@ contract FiveoutofnineRewardChecksTest is Test {
         vm.prank(_minter);
         vm.deal(_minter, REWARD_AMOUNT);
         vm.expectRevert("UNAUTHORIZED");
-        rewardChecks.mint{ value: REWARD_AMOUNT }(recipient);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient);
     }
 
     /// @notice Tests that the `mint` function reverts when an incorrect amount
@@ -102,9 +104,11 @@ contract FiveoutofnineRewardChecksTest is Test {
         // Call the mint function with the incorrect amount of ETH.
         vm.prank(owner);
         vm.expectRevert(
-            abi.encodeWithSelector(IFiveoutofnineRewardChecks.InsufficientFunds.selector)
+            abi.encodeWithSelector(
+                IFiveoutofnineRewardChecks.InsufficientFunds.selector
+            )
         );
-        rewardChecks.mint{ value: _amount }(recipient);
+        rewardChecks.mint{value: _amount}(recipient);
     }
 
     /// @notice Tests that the `mint` function works correctly.
@@ -115,12 +119,15 @@ contract FiveoutofnineRewardChecksTest is Test {
 
         // Call the mint function.
         vm.prank(owner);
-        rewardChecks.mint{ value: REWARD_AMOUNT }(recipient);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient);
 
         // Check storage and balances after.
         unchecked {
             assertEq(rewardChecks.ownerOf(1), recipient);
-            assertEq(rewardChecks.balanceOf(recipient), recipientNftBalanceBefore + 1);
+            assertEq(
+                rewardChecks.balanceOf(recipient),
+                recipientNftBalanceBefore + 1
+            );
             assertEq(owner.balance, ownerBalanceBefore - REWARD_AMOUNT);
             assertEq(recipient.balance, recipientBalanceBefore + REWARD_AMOUNT);
         }
@@ -135,7 +142,11 @@ contract FiveoutofnineRewardChecksTest is Test {
     /// @param _id The token ID.
     function test_tokenURI_TokenUnminted_Reverts(uint256 _id) public {
         // Call the tokenURI function with the unminted token ID.
-        vm.expectRevert(abi.encodeWithSelector(IFiveoutofnineRewardChecks.TokenUnminted.selector));
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IFiveoutofnineRewardChecks.TokenUnminted.selector
+            )
+        );
         rewardChecks.tokenURI(_id);
     }
 }
