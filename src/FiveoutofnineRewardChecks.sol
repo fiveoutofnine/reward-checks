@@ -75,6 +75,9 @@ contract FiveoutofnineRewardChecks is
                 memo: _memo
             });
 
+            emit UpdateTokenTheme(_nextTokenId, Art.Theme.GRAY);
+            emit UpdateTokenMemo(_nextTokenId, _memo);
+
             // Increment the next token ID.
             _nextTokenId++;
         }
@@ -93,6 +96,7 @@ contract FiveoutofnineRewardChecks is
         if (_ownerOf[_id] == address(0)) revert TokenUnminted();
 
         getMetadata[_id].memo = _memo;
+        emit UpdateTokenMemo(_id, _memo);
     }
 
     /// @inheritdoc IFiveoutofnineRewardChecks
@@ -106,6 +110,7 @@ contract FiveoutofnineRewardChecks is
         if (_ownerOf[_id] != msg.sender) revert Unauthorized();
 
         getMetadata[_id].theme = _theme;
+        emit UpdateTokenTheme(_id, _theme);
     }
 
     // -------------------------------------------------------------------------

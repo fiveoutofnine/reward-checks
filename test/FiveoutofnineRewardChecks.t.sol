@@ -24,6 +24,20 @@ contract FiveoutofnineRewardChecksTest is Test {
     uint256 constant REWARD_AMOUNT = 0.000_055_555_555_555_555 ether;
 
     // -------------------------------------------------------------------------
+    // Events
+    // -------------------------------------------------------------------------
+
+    /// @notice Emitted when a token's memo is updated.
+    /// @param id The token ID.
+    /// @param memo The new memo.
+    event UpdateTokenMemo(uint256 indexed id, string memo);
+
+    /// @notice Emitted when a token's theme is updated.
+    /// @param id The token ID.
+    /// @param theme The new theme.
+    event UpdateTokenTheme(uint256 indexed id, Art.Theme theme);
+
+    // -------------------------------------------------------------------------
     // Immutable storage
     // -------------------------------------------------------------------------
 
@@ -120,7 +134,11 @@ contract FiveoutofnineRewardChecksTest is Test {
         uint256 recipientBalanceBefore = recipient.balance;
         uint256 recipientNftBalanceBefore = rewardChecks.balanceOf(recipient);
 
-        // Call the mint function.
+        // Call the mint function and check events.
+        vm.expectEmit(true, false, false, true);
+        emit UpdateTokenTheme(1, Art.Theme.GRAY);
+        vm.expectEmit(true, false, false, true);
+        emit UpdateTokenMemo(1, "test memo");
         vm.prank(owner);
         rewardChecks.mint{value: REWARD_AMOUNT}(recipient, "test memo");
 
@@ -190,7 +208,9 @@ contract FiveoutofnineRewardChecksTest is Test {
         (, , , string memory memo) = rewardChecks.getMetadata(1);
         assertEq(memo, "original memo");
 
-        // Set a new memo.
+        // Set a new memo and check event.
+        vm.expectEmit(true, false, false, true);
+        emit UpdateTokenMemo(1, "updated memo");
         vm.prank(owner);
         rewardChecks.setTokenMemo(1, "updated memo");
 
@@ -249,7 +269,9 @@ contract FiveoutofnineRewardChecksTest is Test {
         (Art.Theme theme, , , ) = rewardChecks.getMetadata(1);
         assertEq(uint256(theme), uint256(Art.Theme.GRAY));
 
-        // Set a new theme.
+        // Set a new theme and check event.
+        vm.expectEmit(true, false, false, true);
+        emit UpdateTokenTheme(1, Art.Theme.BLUE);
         vm.prank(recipient);
         rewardChecks.setTokenTheme(1, Art.Theme.BLUE);
 

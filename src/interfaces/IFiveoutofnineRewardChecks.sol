@@ -9,6 +9,19 @@ import {
 /// @author fiveoutofnine
 interface IFiveoutofnineRewardChecks {
     // -------------------------------------------------------------------------
+    // Errors
+    // -------------------------------------------------------------------------
+
+    /// @notice Emitted when the sender didn't supply enough funds.
+    error InsufficientFunds();
+
+    /// @notice Emitted when a token hasn't been minted.
+    error TokenUnminted();
+
+    /// @notice Reverts if the sender isn't the owner of the token.
+    error Unauthorized();
+
+    // -------------------------------------------------------------------------
     // Structs
     // -------------------------------------------------------------------------
 
@@ -25,17 +38,18 @@ interface IFiveoutofnineRewardChecks {
     }
 
     // -------------------------------------------------------------------------
-    // Errors
+    // Events
     // -------------------------------------------------------------------------
 
-    /// @notice Emitted when the sender didn't supply enough funds.
-    error InsufficientFunds();
+    /// @notice Emitted when a token's memo is updated.
+    /// @param _id The token ID.
+    /// @param _memo The new memo.
+    event UpdateTokenMemo(uint256 indexed _id, string _memo);
 
-    /// @notice Emitted when a token hasn't been minted.
-    error TokenUnminted();
-
-    /// @notice Reverts if the sender isn't the owner of the token.
-    error Unauthorized();
+    /// @notice Emitted when a token's theme is updated.
+    /// @param _id The token ID.
+    /// @param _theme The new theme.
+    event UpdateTokenTheme(uint256 indexed _id, Art.Theme _theme);
 
     // -------------------------------------------------------------------------
     // Storage
@@ -70,6 +84,18 @@ interface IFiveoutofnineRewardChecks {
     /// @param _to The address to mint the token to.
     /// @param _memo An optional memo on the reward check.
     function mint(address _to, string memory _memo) external payable;
+
+    /// @notice Sets the memo for a given token ID.
+    /// @dev The function MUST be only callable by the contract owner.
+    /// @param _id The token ID.
+    /// @param _memo The memo to set for the token.
+    function setTokenMemo(uint256 _id, string memory _memo) external;
+
+    /// @notice Sets the theme for a given token ID.
+    /// @dev The function MUST be only callable by the token's owner.
+    /// @param _id The token ID.
+    /// @param _theme The theme to set for the token.
+    function setTokenTheme(uint256 _id, Art.Theme _theme) external;
 
     // -------------------------------------------------------------------------
     // Metadata
