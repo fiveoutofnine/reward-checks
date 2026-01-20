@@ -13,9 +13,9 @@ import {
     FiveoutofnineRewardChecksArt as Art
 } from "./utils/FiveoutofnineRewardChecksArt.sol";
 
-/// @title 5/9 Reward Checks
+/// @title ⁵⁄₉ Reward Checks
 /// @author fiveoutofnine
-/// @notice Checks awarded by 5/9 for finding technical, typographical, or
+/// @notice Checks awarded by ⁵⁄₉ for finding technical, typographical, or
 /// historical errors, or making substantial suggestions for his publications.
 contract FiveoutofnineRewardChecks is
     IFiveoutofnineRewardChecks,
@@ -37,7 +37,7 @@ contract FiveoutofnineRewardChecks is
 
     /// @notice Description of the collection.
     string constant COLLECTION_DESCRIPTION =
-        "Checks awarded by 5/9 for finding technical, typographical, or histori"
+        "Checks awarded by ⁵⁄₉ for finding technical, typographical, or histori"
         "cal errors, or making substantial suggestions for his publications.";
 
     // -------------------------------------------------------------------------
@@ -54,7 +54,7 @@ contract FiveoutofnineRewardChecks is
     // Constructor + functions
     // -------------------------------------------------------------------------
 
-    constructor() ERC721("5/9 Reward Checks", "5/9") Owned(FIVEOUTOFNINE) {}
+    constructor() ERC721("⁵⁄₉ Reward Checks", "⁵⁄₉") Owned(FIVEOUTOFNINE) {}
 
     /// @inheritdoc IFiveoutofnineRewardChecks
     function mint(
@@ -141,7 +141,7 @@ contract FiveoutofnineRewardChecks is
                 "data:application/json;base64,",
                 Base64.encode(
                     abi.encodePacked(
-                        '{"name":"5/9 Reward Check #',
+                        '{"name":"⁵⁄₉ Reward Check #',
                         _id.toString(),
                         '","description":"',
                         COLLECTION_DESCRIPTION,
@@ -166,7 +166,7 @@ contract FiveoutofnineRewardChecks is
                 "data:application/json;charset=utf-8;base64,",
                 Base64.encode(
                     abi.encodePacked(
-                        '{"name":"5/9 Reward Checks","description":"',
+                        '{"name":"⁵⁄₉ Reward Checks","description":"',
                         COLLECTION_DESCRIPTION,
                         '"}'
                     )
