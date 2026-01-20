@@ -15,8 +15,9 @@ import {
 
 /// @title ⁵⁄₉ Reward Checks
 /// @author fiveoutofnine
-/// @notice Checks awarded by ⁵⁄₉ for finding technical, typographical, or
-/// historical errors, or making substantial suggestions for his publications.
+
+/// @notice Reward checks of 5̅ ⋅ 10⁻⁵ ETH, awarded by ⁵⁄₉ for finding fixes,
+/// errors, or making suggestions to their work.
 contract FiveoutofnineRewardChecks is
     IFiveoutofnineRewardChecks,
     ERC721,
@@ -37,8 +38,8 @@ contract FiveoutofnineRewardChecks is
 
     /// @notice Description of the collection.
     string constant COLLECTION_DESCRIPTION =
-        "Checks awarded by ⁵⁄₉ for finding technical, typographical, or histori"
-        "cal errors, or making substantial suggestions for his publications.";
+        unicode"Reward checks of 5̅ ⋅ 10⁻⁵ ETH, awarded by ⁵⁄₉ for finding fixes"
+        unicode", errors, or making suggestions to their work.";
 
     // -------------------------------------------------------------------------
     // Storage
@@ -100,10 +101,7 @@ contract FiveoutofnineRewardChecks is
     }
 
     /// @inheritdoc IFiveoutofnineRewardChecks
-    function setTokenTheme(
-        uint256 _id,
-        Art.Theme _theme
-    ) external override {
+    function setTokenTheme(uint256 _id, Art.Theme _theme) external override {
         // Revert if the token hasn't been minted.
         if (_ownerOf[_id] == address(0)) revert TokenUnminted();
         // Revert if the sender isn't the owner of the token.
