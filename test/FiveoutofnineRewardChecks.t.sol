@@ -88,8 +88,8 @@ contract FiveoutofnineRewardChecksTest is Test {
     function test_constructor() public view {
         // Test that the contract is deployed correctly.
         assertEq(rewardChecks.owner(), FIVEOUTOFNINE);
-        assertEq(rewardChecks.name(), "5/9 Reward Checks");
-        assertEq(rewardChecks.symbol(), "5/9");
+        assertEq(rewardChecks.name(), unicode"⁵⁄₉ Reward Checks");
+        assertEq(rewardChecks.symbol(), unicode"⁵⁄₉");
     }
 
     // -------------------------------------------------------------------------

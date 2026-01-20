@@ -13,7 +13,7 @@ import {
     FiveoutofnineRewardChecksArt as Art
 } from "./utils/FiveoutofnineRewardChecksArt.sol";
 
-/// @title 5/9 Reward Checks
+/// @title ⁵⁄₉ Reward Checks
 /// @author fiveoutofnine
 
 /// @notice Reward checks of 5̅ ⋅ 10⁻⁵ ETH, awarded by ⁵⁄₉ for finding fixes,
@@ -55,7 +55,7 @@ contract FiveoutofnineRewardChecks is
     // Constructor + functions
     // -------------------------------------------------------------------------
 
-    constructor() ERC721("5/9 Reward Checks", "5/9") Owned(FIVEOUTOFNINE) {}
+    constructor() ERC721(unicode"⁵⁄₉ Reward Checks", unicode"⁵⁄₉") Owned(FIVEOUTOFNINE) {}
 
     /// @inheritdoc IFiveoutofnineRewardChecks
     function mint(
@@ -139,7 +139,7 @@ contract FiveoutofnineRewardChecks is
                 "data:application/json;base64,",
                 Base64.encode(
                     abi.encodePacked(
-                        '{"name":"5/9 Reward Check #',
+                        unicode'{"name":"⁵⁄₉ Reward Check #',
                         _id.toString(),
                         '","description":"',
                         COLLECTION_DESCRIPTION,
@@ -164,7 +164,7 @@ contract FiveoutofnineRewardChecks is
                 "data:application/json;charset=utf-8;base64,",
                 Base64.encode(
                     abi.encodePacked(
-                        '{"name":"5/9 Reward Checks","description":"',
+                        unicode'{"name":"⁵⁄₉ Reward Checks","description":"',
                         COLLECTION_DESCRIPTION,
                         '"}'
                     )
