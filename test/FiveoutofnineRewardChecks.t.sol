@@ -147,6 +147,118 @@ contract FiveoutofnineRewardChecksTest is Test {
     }
 
     // -------------------------------------------------------------------------
+    // `setTokenMemo`
+    // -------------------------------------------------------------------------
+
+    /// @notice Tests that the `setTokenMemo` function reverts when the caller
+    /// is not the contract owner.
+    /// @param _caller The address of the caller.
+    function test_setTokenMemo_CallerNotOwner_Reverts(address _caller) public {
+        vm.assume(_caller != owner);
+
+        // Mint a token first.
+        vm.prank(owner);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient, "");
+
+        // Call the setTokenMemo function as an invalid sender.
+        vm.prank(_caller);
+        vm.expectRevert("UNAUTHORIZED");
+        rewardChecks.setTokenMemo(1, "new memo");
+    }
+
+    /// @notice Tests that the `setTokenMemo` function reverts when the token
+    /// hasn't been minted.
+    /// @param _id The token ID.
+    function test_setTokenMemo_TokenUnminted_Reverts(uint256 _id) public {
+        // Call the setTokenMemo function with an unminted token ID.
+        vm.prank(owner);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IFiveoutofnineRewardChecks.TokenUnminted.selector
+            )
+        );
+        rewardChecks.setTokenMemo(_id, "new memo");
+    }
+
+    /// @notice Tests that the `setTokenMemo` function works correctly.
+    function test_setTokenMemo() public {
+        // Mint a token first.
+        vm.prank(owner);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient, "original memo");
+
+        // Verify original memo.
+        (, , , string memory memo) = rewardChecks.getMetadata(1);
+        assertEq(memo, "original memo");
+
+        // Set a new memo.
+        vm.prank(owner);
+        rewardChecks.setTokenMemo(1, "updated memo");
+
+        // Verify the memo was updated.
+        (, , , memo) = rewardChecks.getMetadata(1);
+        assertEq(memo, "updated memo");
+    }
+
+    // -------------------------------------------------------------------------
+    // `setTokenTheme`
+    // -------------------------------------------------------------------------
+
+    /// @notice Tests that the `setTokenTheme` function reverts when the caller
+    /// is not the token owner.
+    /// @param _caller The address of the caller.
+    function test_setTokenTheme_CallerNotTokenOwner_Reverts(
+        address _caller
+    ) public {
+        vm.assume(_caller != recipient);
+
+        // Mint a token first.
+        vm.prank(owner);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient, "");
+
+        // Call the setTokenTheme function as an invalid sender.
+        vm.prank(_caller);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IFiveoutofnineRewardChecks.Unauthorized.selector
+            )
+        );
+        rewardChecks.setTokenTheme(1, Art.Theme.BLUE);
+    }
+
+    /// @notice Tests that the `setTokenTheme` function reverts when the token
+    /// hasn't been minted.
+    /// @param _id The token ID.
+    function test_setTokenTheme_TokenUnminted_Reverts(uint256 _id) public {
+        // Call the setTokenTheme function with an unminted token ID.
+        vm.prank(recipient);
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IFiveoutofnineRewardChecks.TokenUnminted.selector
+            )
+        );
+        rewardChecks.setTokenTheme(_id, Art.Theme.BLUE);
+    }
+
+    /// @notice Tests that the `setTokenTheme` function works correctly.
+    function test_setTokenTheme() public {
+        // Mint a token first.
+        vm.prank(owner);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient, "");
+
+        // Verify original theme.
+        (Art.Theme theme, , , ) = rewardChecks.getMetadata(1);
+        assertEq(uint256(theme), uint256(Art.Theme.GRAY));
+
+        // Set a new theme.
+        vm.prank(recipient);
+        rewardChecks.setTokenTheme(1, Art.Theme.BLUE);
+
+        // Verify the theme was updated.
+        (theme, , , ) = rewardChecks.getMetadata(1);
+        assertEq(uint256(theme), uint256(Art.Theme.BLUE));
+    }
+
+    // -------------------------------------------------------------------------
     // `tokenURI`
     // -------------------------------------------------------------------------
 

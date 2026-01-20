@@ -84,6 +84,30 @@ contract FiveoutofnineRewardChecks is
         require(success);
     }
 
+    /// @inheritdoc IFiveoutofnineRewardChecks
+    function setTokenMemo(
+        uint256 _id,
+        string memory _memo
+    ) external override onlyOwner {
+        // Revert if the token hasn't been minted.
+        if (_ownerOf[_id] == address(0)) revert TokenUnminted();
+
+        getMetadata[_id].memo = _memo;
+    }
+
+    /// @inheritdoc IFiveoutofnineRewardChecks
+    function setTokenTheme(
+        uint256 _id,
+        Art.Theme _theme
+    ) external override {
+        // Revert if the token hasn't been minted.
+        if (_ownerOf[_id] == address(0)) revert TokenUnminted();
+        // Revert if the sender isn't the owner of the token.
+        if (_ownerOf[_id] != msg.sender) revert Unauthorized();
+
+        getMetadata[_id].theme = _theme;
+    }
+
     // -------------------------------------------------------------------------
     // ERC721Metadata
     // -------------------------------------------------------------------------
