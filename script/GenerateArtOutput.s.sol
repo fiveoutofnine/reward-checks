@@ -2,7 +2,6 @@
 pragma solidity ^0.8.21;
 
 import {Script} from "forge-std/Script.sol";
-import {console} from "forge-std/Test.sol";
 import {LibString} from "solady/utils/LibString.sol";
 
 import {
