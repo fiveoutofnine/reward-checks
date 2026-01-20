@@ -47,6 +47,9 @@ contract FiveoutofnineRewardChecks is
     /// @notice The next token ID to be minted.
     uint256 internal _nextTokenId = 1;
 
+    /// @inheritdoc IFiveoutofnineRewardChecks
+    mapping(uint256 => Metadata) public override getMetadata;
+
     // -------------------------------------------------------------------------
     // Constructor + functions
     // -------------------------------------------------------------------------
@@ -54,13 +57,26 @@ contract FiveoutofnineRewardChecks is
     constructor() ERC721("5/9 Reward Checks", "5/9") Owned(FIVEOUTOFNINE) {}
 
     /// @inheritdoc IFiveoutofnineRewardChecks
-    function mint(address _to) external payable override onlyOwner {
+    function mint(
+        address _to,
+        string memory _memo
+    ) external payable override onlyOwner {
         // Revert if the sender didn't supply the correct amount of ETH.
         if (msg.value != REWARD_AMOUNT) revert InsufficientFunds();
 
         unchecked {
-            // Mint and increment the next token ID.
-            _mint(_to, _nextTokenId++);
+            _mint(_to, _nextTokenId);
+
+            // Set the metadata for the token.
+            getMetadata[_nextTokenId] = Metadata({
+                theme: Art.Theme.GRAY,
+                recipient: _to,
+                blockNumber: block.number,
+                memo: _memo
+            });
+
+            // Increment the next token ID.
+            _nextTokenId++;
         }
 
         // Transfer the reward amount to `_to`.
@@ -82,12 +98,13 @@ contract FiveoutofnineRewardChecks is
         // Revert if the token hasn't been minted.
         if (_ownerOf[_id] == address(0)) revert TokenUnminted();
 
+        Metadata memory metadata = getMetadata[_id];
         (string memory attributes, string memory image) = Art.render({
             _id: _id,
-            _theme: Art.Theme.GRAY,
-            _recipient: _ownerOf[_id],
-            _blockNumber: block.number,
-            _memo: ""
+            _theme: metadata.theme,
+            _recipient: metadata.recipient,
+            _blockNumber: metadata.blockNumber,
+            _memo: bytes(metadata.memo).length > 0 ? metadata.memo : "N/A"
         });
 
         return

@@ -6,6 +6,9 @@ import {FiveoutofnineRewardChecks} from "src/FiveoutofnineRewardChecks.sol";
 import {
     IFiveoutofnineRewardChecks
 } from "src/interfaces/IFiveoutofnineRewardChecks.sol";
+import {
+    FiveoutofnineRewardChecksArt as Art
+} from "src/utils/FiveoutofnineRewardChecksArt.sol";
 
 /// @notice Unit tests for {FiveoutofnineRewardChecks}.
 contract FiveoutofnineRewardChecksTest is Test {
@@ -91,7 +94,7 @@ contract FiveoutofnineRewardChecksTest is Test {
         vm.prank(_minter);
         vm.deal(_minter, REWARD_AMOUNT);
         vm.expectRevert("UNAUTHORIZED");
-        rewardChecks.mint{value: REWARD_AMOUNT}(recipient);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient, "");
     }
 
     /// @notice Tests that the `mint` function reverts when an incorrect amount
@@ -108,7 +111,7 @@ contract FiveoutofnineRewardChecksTest is Test {
                 IFiveoutofnineRewardChecks.InsufficientFunds.selector
             )
         );
-        rewardChecks.mint{value: _amount}(recipient);
+        rewardChecks.mint{value: _amount}(recipient, "");
     }
 
     /// @notice Tests that the `mint` function works correctly.
@@ -119,10 +122,20 @@ contract FiveoutofnineRewardChecksTest is Test {
 
         // Call the mint function.
         vm.prank(owner);
-        rewardChecks.mint{value: REWARD_AMOUNT}(recipient);
+        rewardChecks.mint{value: REWARD_AMOUNT}(recipient, "test memo");
 
         // Check storage and balances after.
         unchecked {
+            (
+                Art.Theme theme,
+                address rewardRecipient,
+                uint256 blockNumber,
+                string memory memo
+            ) = rewardChecks.getMetadata(1);
+            assertEq(rewardRecipient, recipient);
+            assertEq(uint256(theme), uint256(Art.Theme.GRAY));
+            assertEq(blockNumber, block.number);
+            assertEq(memo, "test memo");
             assertEq(rewardChecks.ownerOf(1), recipient);
             assertEq(
                 rewardChecks.balanceOf(recipient),
@@ -148,5 +161,14 @@ contract FiveoutofnineRewardChecksTest is Test {
             )
         );
         rewardChecks.tokenURI(_id);
+    }
+
+    // -------------------------------------------------------------------------
+    // `contractURI`
+    // -------------------------------------------------------------------------
+
+    /// @notice Tests that the `contractURI` function does not revert.
+    function test_contractURI() public view {
+        rewardChecks.contractURI();
     }
 }
